@@ -1,0 +1,26 @@
+{
+  "name": "spartanbotoutput",
+  "version": "1.0.0",
+  "description": "Uses the Spartanbot class to output spot profitability.",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon src/index.js"
+  },
+  "author": "Truedev",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/cli": "^7.0.0",
+    "@babel/core": "^7.0.1",
+    "@babel/preset-env": "^7.0.0",
+    "babel-core": "^7.0.0-bridge.0"
+  },
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "https": "^1.0.0",
+    "node-fetch": "^2.6.0",
+    "node-localstorage": "^2.1.6",
+    "nodemon": "^2.0.6",
+    "spartanbot": "git+https://github.com/truedev08/spartanbot-truedev.git"
+  }
+}
