@@ -8,6 +8,8 @@ require("dotenv").config();
 
 const {API_KEY, API_SECRET, ORG_ID} = process.env;
 
+let workerAddress = 'RRj8fK1WRUr6mHWxwMF3Cb7X35HcmF9Pet'; //TrueDevs RVN worker
+
 let settingsNiceHash = { //martin
   type: 'NiceHash',
   api_key: API_KEY,
@@ -19,26 +21,19 @@ let settingsNiceHash = { //martin
 let settingsMRR = {
   type: 'MiningRigRentals',
   api_key: '',
-  api_secret: 
-    '',
+  api_secret: '',
   name: 'MiningRigRentals'
 };
 
+let userInput = {
+  token: 'RVN',
+  tokenAlgo: 'KAWPOW',
+  nextWorker: workerAddress,
+  minDuration: .5,  // this should be a user setting (not in the main interface)
+  minMargin: .10
+}
+
 let spartanBot = new SpartanBot();
-
-
-// let workerAddress = 'RQ53R914eqTW1TUydNarJRXCqvzgxumzDN';
-// let workerAddress = 'RPaaykQ21WyN5fSxcCgAFrEUznPAA8NkLm';
-// let workerAddress = 'RDahgf8vP1eDxHSWa3FEaBBt2pYvhdtZ5D';
-// let workerAddress = 'RRYb61YAxJB6HhSWNYr4QH3dxmpQvRr1vp';
-// let workerAddress = 'RGystomrH55DYMJKZw4Hkp89vxV1DTTSuN'; 
-// let workerAddress = 'RM9ncrtmq7aN1Qfnj5jeqdtffTSawTPRZo'; 
-
-let workerAddress = 'RAXNZ1Rwp2wRf4miqnMALWkKMgFdf5QVRc'; // Devon's unused worker
-
-// let workerAddress = 'RRj8fK1WRUr6mHWxwMF3Cb7X35HcmF9Pet'; //TrueDevs RVN worker
-
-// let workerAddress = 'RHERYpAgGvKNCy5h2K6JWnuXDzZih88KZ3'; // KsaRedFXs RVN worker
 
 
 let MinerSubStatusCodes = new Array();
@@ -2018,7 +2013,7 @@ let rentalProvider = spartanBot
         return {RentalCompositeStatusCode, PriceRentalStandard, marketFactor, MarketFactorName, BotStatusCode}
       }      
     }
-// RentalCompositeStatusCodeOverride
+    // RentalCompositeStatusCodeOverride
     async function getcurrentrental(CurrentConditions) {
       let RewardsCompositeCode = CurrentConditions.RewardsCompositeCode;
       let MinerSubStatusCode = CurrentConditions.MinerSubStatusCode;
@@ -2554,26 +2549,78 @@ let rentalProvider = spartanBot
 
 
 
-// move everything into the parts that are exclusive to that RentalCompositeStatusCode (after the higher number while '}' )
+    // move everything into the parts that are exclusive to that RentalCompositeStatusCode (after the higher number while '}' )
 
-while (RentalCompositeStatusCode >= 0) {
-  rewardsBeforeRentalStart = CurrentConditions.rewardsTotal // turn off if something is interupted mid cycle
-  // rewardsBeforeRentalStart = 90556.983; // turn on if something is interupted mid cycle
-  while (RentalCompositeStatusCode >= 1) {
-    // console.log('While RentalCompositeStatusCode >= 1; rewardsBeforeRentalStart:', Math.round((rewardsBeforeRentalStart)*1e3)/1e3, 'rental ended at:', RentalEndTime, 'current time:', CurrentTime, 'difference:', TimeSinceRentalEnded, 'limit:', StopMonitoringForRewardsLimit, SpartanBotCompositeStatusCode)
+    while (RentalCompositeStatusCode >= 0) {
+      rewardsBeforeRentalStart = CurrentConditions.rewardsTotal // turn off if something is interupted mid cycle
+      // rewardsBeforeRentalStart = 90556.983; // turn on if something is interupted mid cycle
+      while (RentalCompositeStatusCode >= 1) {
+        // console.log('While RentalCompositeStatusCode >= 1; rewardsBeforeRentalStart:', Math.round((rewardsBeforeRentalStart)*1e3)/1e3, 'rental ended at:', RentalEndTime, 'current time:', CurrentTime, 'difference:', TimeSinceRentalEnded, 'limit:', StopMonitoringForRewardsLimit, SpartanBotCompositeStatusCode)
 
-    while (RentalCompositeStatusCode >=2) {
-      // console.log('While RentalCompositeStatusCode >= 2; rewardsBeforeRentalStart:', Math.round((rewardsBeforeRentalStart)*1e3)/1e3, 'rental ended at:', RentalEndTime, 'current time:', CurrentTime, 'difference:', TimeSinceRentalEnded, 'limit:', StopMonitoringForRewardsLimit, SpartanBotCompositeStatusCode)
+        while (RentalCompositeStatusCode >=2) {
+          // console.log('While RentalCompositeStatusCode >= 2; rewardsBeforeRentalStart:', Math.round((rewardsBeforeRentalStart)*1e3)/1e3, 'rental ended at:', RentalEndTime, 'current time:', CurrentTime, 'difference:', TimeSinceRentalEnded, 'limit:', StopMonitoringForRewardsLimit, SpartanBotCompositeStatusCode)
 
-      while (RentalCompositeStatusCode >= 3) {
-        
-        while (RentalCompositeStatusCode >= 4) {
-          while (RentalCompositeStatusCode >= 5) {
-            while (RentalCompositeStatusCode > 5) {
-              while (RentalCompositeStatusCode === 7){
-                let sleeptime = 30 * 1000
+          while (RentalCompositeStatusCode >= 3) {
+            
+            while (RentalCompositeStatusCode >= 4) {
+              while (RentalCompositeStatusCode >= 5) {
+                while (RentalCompositeStatusCode > 5) {
+                  while (RentalCompositeStatusCode === 7){
+                    let sleeptime = 30 * 1000
+                    CurrentConditions = await getcurrentconditions(UserInput.token, UserInput.tokenAlgo, UserInput.minDuration, tokensPerBlock, blocksPerHour)
+                    RewardsCompositeCode = (CurrentConditions === undefined) ? (9) : (CurrentConditions.RewardsCompositeCode)
+                    CurrentRental = await getcurrentrental(CurrentConditions)
+                    let BestArbitrageCurrentConditions = await bestarbitragecurrentconditions(NetworkPercent, UserInput, tokensPerBlock, blocksPerHour, CurrentConditions)
+                    let LiveEstimatesFromMining = await liveestimatesfrommining(CurrentRental, CurrentConditions, UserInput, tokensPerBlock, blocksPerHour, rewardsBeforeRentalStart)
+                    BotStatus = await botstatus(RentalCompositeStatusCode, RewardsCompositeCode, CurrentConditions, CurrentRental, LiveEstimatesFromMining, MinerSubStatusCode, RoundSharesSubStatusCode, CandidateBlocksSubStatusCode, BestArbitrageCurrentConditions, UserInput.minMargin)
+                    let RentalEndTime = BotStatus.RentalEndTime;
+                    let CurrentTime = new Date().getTime();
+                    let TimeSinceRentalEnded = CurrentTime - RentalEndTime
+                    let StopMonitoringForRewardsLimit = CurrentRental.StopMonitoringForRewardsLimit
+
+                    RentalCompositeStatusCode = (CurrentRental === undefined) ? (9) : (CurrentRental.RentalCompositeStatusCode)
+                    BotStatusCode = (BotStatus === undefined) ? (9) : (BotStatus.BotStatusCode)
+                    
+                    SpartanBotCompositeStatusCode = "" + RentalCompositeStatusCode + RewardsCompositeCode + BotStatusCode
+                    
+                    console.log('While RentalCompositeStatusCode = 7; rewardsBeforeRentalStart:', Math.round((rewardsBeforeRentalStart)*1e3)/1e3, SpartanBotCompositeStatusCode)
+
+                    output(CurrentConditions, CurrentRental, UserInput.token, SpartanBotCompositeStatusCode, BestArbitrageCurrentConditions, LiveEstimatesFromMining, sleeptime, BotStatusCode)
+                    await beforerentalsleep(sleeptime, SpartanBotCompositeStatusCode, CurrentConditions, RentalCompositeStatusCode)  
+                  }
+                  while (RentalCompositeStatusCode === 9){
+                    let sleeptime = 30 * 1000
+                    CurrentConditions = await getcurrentconditions(UserInput.token, UserInput.tokenAlgo, UserInput.minDuration, tokensPerBlock, blocksPerHour)
+                    RewardsCompositeCode = (CurrentConditions === undefined) ? (9) : (CurrentConditions.RewardsCompositeCode)
+                    CurrentRental = await getcurrentrental(CurrentConditions)
+                    let BestArbitrageCurrentConditions = await bestarbitragecurrentconditions(NetworkPercent, UserInput, tokensPerBlock, blocksPerHour, CurrentConditions)
+                    let LiveEstimatesFromMining = await liveestimatesfrommining(CurrentRental, CurrentConditions, UserInput, tokensPerBlock, blocksPerHour, rewardsBeforeRentalStart)
+                    BotStatus = await botstatus(RentalCompositeStatusCode, RewardsCompositeCode, CurrentConditions, CurrentRental, LiveEstimatesFromMining, MinerSubStatusCode, RoundSharesSubStatusCode, CandidateBlocksSubStatusCode, BestArbitrageCurrentConditions, UserInput.minMargin)
+                    let RentalEndTime = BotStatus.RentalEndTime;
+                    let CurrentTime = new Date().getTime();
+                    let TimeSinceRentalEnded = CurrentTime - RentalEndTime
+                    let StopMonitoringForRewardsLimit = CurrentRental.StopMonitoringForRewardsLimit
+
+                    RentalCompositeStatusCode = (CurrentRental === undefined) ? (9) : (CurrentRental.RentalCompositeStatusCode)
+                    BotStatusCode = (BotStatus === undefined) ? (9) : (BotStatus.BotStatusCode)
+                    
+                    SpartanBotCompositeStatusCode = "" + RentalCompositeStatusCode + RewardsCompositeCode + BotStatusCode
+                    
+                    console.log('While RentalCompositeStatusCode = 9; rewardsBeforeRentalStart:', Math.round((rewardsBeforeRentalStart)*1e3)/1e3, SpartanBotCompositeStatusCode)
+
+                    output(CurrentConditions, CurrentRental, UserInput.token, SpartanBotCompositeStatusCode, BestArbitrageCurrentConditions, LiveEstimatesFromMining, sleeptime, BotStatusCode)
+                    await beforerentalsleep(sleeptime, SpartanBotCompositeStatusCode, CurrentConditions, RentalCompositeStatusCode)  
+                  
+                  }
+                  //error state (above 5)
+                  let sleeptime = 30 * 1000
+                  console.log('While RentalCompositeStatusCode = 5; rewardsBeforeRentalStart:', Math.round((rewardsBeforeRentalStart)*1e3)/1e3, 'rental ended at:', RentalEndTime, 'current time:', CurrentTime, 'difference:', TimeSinceRentalEnded, 'limit:', StopMonitoringForRewardsLimit, SpartanBotCompositeStatusCode)
+                  output(CurrentConditions, CurrentRental, UserInput.token, SpartanBotCompositeStatusCode, BestArbitrageCurrentConditions, LiveEstimatesFromMining, sleeptime, BotStatusCode)
+                  await duringrentalsleep(sleeptime, SpartanBotCompositeStatusCode, CurrentConditions, CurrentRental, RentalCompositeStatusCode)
+
+                } // only 5
+
                 CurrentConditions = await getcurrentconditions(UserInput.token, UserInput.tokenAlgo, UserInput.minDuration, tokensPerBlock, blocksPerHour)
-                RewardsCompositeCode = (CurrentConditions === undefined) ? (9) : (CurrentConditions.RewardsCompositeCode)
                 CurrentRental = await getcurrentrental(CurrentConditions)
                 let BestArbitrageCurrentConditions = await bestarbitragecurrentconditions(NetworkPercent, UserInput, tokensPerBlock, blocksPerHour, CurrentConditions)
                 let LiveEstimatesFromMining = await liveestimatesfrommining(CurrentRental, CurrentConditions, UserInput, tokensPerBlock, blocksPerHour, rewardsBeforeRentalStart)
@@ -2583,47 +2630,17 @@ while (RentalCompositeStatusCode >= 0) {
                 let TimeSinceRentalEnded = CurrentTime - RentalEndTime
                 let StopMonitoringForRewardsLimit = CurrentRental.StopMonitoringForRewardsLimit
 
-                RentalCompositeStatusCode = (CurrentRental === undefined) ? (9) : (CurrentRental.RentalCompositeStatusCode)
+                RentalCompositeStatusCode = (RentalCompositeStatusCode === undefined) ? (9) : (CurrentRental.RentalCompositeStatusCode)
                 BotStatusCode = (BotStatus === undefined) ? (9) : (BotStatus.BotStatusCode)
-                
+                RewardsCompositeCode = (RewardsCompositeCode === undefined) ? (9) : (CurrentConditions.RewardsCompositeCode)
                 SpartanBotCompositeStatusCode = "" + RentalCompositeStatusCode + RewardsCompositeCode + BotStatusCode
-                
-                console.log('While RentalCompositeStatusCode = 7; rewardsBeforeRentalStart:', Math.round((rewardsBeforeRentalStart)*1e3)/1e3, SpartanBotCompositeStatusCode)
-
-                output(CurrentConditions, CurrentRental, UserInput.token, SpartanBotCompositeStatusCode, BestArbitrageCurrentConditions, LiveEstimatesFromMining, sleeptime, BotStatusCode)
-                await beforerentalsleep(sleeptime, SpartanBotCompositeStatusCode, CurrentConditions, RentalCompositeStatusCode)  
-              }
-              while (RentalCompositeStatusCode === 9){
                 let sleeptime = 30 * 1000
-                CurrentConditions = await getcurrentconditions(UserInput.token, UserInput.tokenAlgo, UserInput.minDuration, tokensPerBlock, blocksPerHour)
-                RewardsCompositeCode = (CurrentConditions === undefined) ? (9) : (CurrentConditions.RewardsCompositeCode)
-                CurrentRental = await getcurrentrental(CurrentConditions)
-                let BestArbitrageCurrentConditions = await bestarbitragecurrentconditions(NetworkPercent, UserInput, tokensPerBlock, blocksPerHour, CurrentConditions)
-                let LiveEstimatesFromMining = await liveestimatesfrommining(CurrentRental, CurrentConditions, UserInput, tokensPerBlock, blocksPerHour, rewardsBeforeRentalStart)
-                BotStatus = await botstatus(RentalCompositeStatusCode, RewardsCompositeCode, CurrentConditions, CurrentRental, LiveEstimatesFromMining, MinerSubStatusCode, RoundSharesSubStatusCode, CandidateBlocksSubStatusCode, BestArbitrageCurrentConditions, UserInput.minMargin)
-                let RentalEndTime = BotStatus.RentalEndTime;
-                let CurrentTime = new Date().getTime();
-                let TimeSinceRentalEnded = CurrentTime - RentalEndTime
-                let StopMonitoringForRewardsLimit = CurrentRental.StopMonitoringForRewardsLimit
-
-                RentalCompositeStatusCode = (CurrentRental === undefined) ? (9) : (CurrentRental.RentalCompositeStatusCode)
-                BotStatusCode = (BotStatus === undefined) ? (9) : (BotStatus.BotStatusCode)
-                
-                SpartanBotCompositeStatusCode = "" + RentalCompositeStatusCode + RewardsCompositeCode + BotStatusCode
-                
-                console.log('While RentalCompositeStatusCode = 9; rewardsBeforeRentalStart:', Math.round((rewardsBeforeRentalStart)*1e3)/1e3, SpartanBotCompositeStatusCode)
-
+                console.log('While RentalCompositeStatusCode = 5; rewardsBeforeRentalStart:', Math.round((rewardsBeforeRentalStart)*1e3)/1e3, 'rental ended at:', RentalEndTime, 'current time:', CurrentTime, 'difference:', TimeSinceRentalEnded, 'limit:', StopMonitoringForRewardsLimit, SpartanBotCompositeStatusCode)
                 output(CurrentConditions, CurrentRental, UserInput.token, SpartanBotCompositeStatusCode, BestArbitrageCurrentConditions, LiveEstimatesFromMining, sleeptime, BotStatusCode)
-                await beforerentalsleep(sleeptime, SpartanBotCompositeStatusCode, CurrentConditions, RentalCompositeStatusCode)  
-              
-              }
-              //error state (above 5)
-              let sleeptime = 30 * 1000
-              console.log('While RentalCompositeStatusCode = 5; rewardsBeforeRentalStart:', Math.round((rewardsBeforeRentalStart)*1e3)/1e3, 'rental ended at:', RentalEndTime, 'current time:', CurrentTime, 'difference:', TimeSinceRentalEnded, 'limit:', StopMonitoringForRewardsLimit, SpartanBotCompositeStatusCode)
-              output(CurrentConditions, CurrentRental, UserInput.token, SpartanBotCompositeStatusCode, BestArbitrageCurrentConditions, LiveEstimatesFromMining, sleeptime, BotStatusCode)
-              await duringrentalsleep(sleeptime, SpartanBotCompositeStatusCode, CurrentConditions, CurrentRental, RentalCompositeStatusCode)
+                await duringrentalsleep(sleeptime, SpartanBotCompositeStatusCode, CurrentConditions, CurrentRental, RentalCompositeStatusCode)
 
-            } // only 5
+              } // only 4
+            } // only 3
 
             CurrentConditions = await getcurrentconditions(UserInput.token, UserInput.tokenAlgo, UserInput.minDuration, tokensPerBlock, blocksPerHour)
             CurrentRental = await getcurrentrental(CurrentConditions)
@@ -2639,318 +2656,149 @@ while (RentalCompositeStatusCode >= 0) {
             BotStatusCode = (BotStatus === undefined) ? (9) : (BotStatus.BotStatusCode)
             RewardsCompositeCode = (RewardsCompositeCode === undefined) ? (9) : (CurrentConditions.RewardsCompositeCode)
             SpartanBotCompositeStatusCode = "" + RentalCompositeStatusCode + RewardsCompositeCode + BotStatusCode
-            let sleeptime = 30 * 1000
-            console.log('While RentalCompositeStatusCode = 5; rewardsBeforeRentalStart:', Math.round((rewardsBeforeRentalStart)*1e3)/1e3, 'rental ended at:', RentalEndTime, 'current time:', CurrentTime, 'difference:', TimeSinceRentalEnded, 'limit:', StopMonitoringForRewardsLimit, SpartanBotCompositeStatusCode)
-            output(CurrentConditions, CurrentRental, UserInput.token, SpartanBotCompositeStatusCode, BestArbitrageCurrentConditions, LiveEstimatesFromMining, sleeptime, BotStatusCode)
-            await duringrentalsleep(sleeptime, SpartanBotCompositeStatusCode, CurrentConditions, CurrentRental, RentalCompositeStatusCode)
+            
+            console.log('While RentalCompositeStatusCode = 3; rewardsBeforeRentalStart:', Math.round((rewardsBeforeRentalStart)*1e3)/1e3, 'rental ended at:', RentalEndTime, 'current time:', CurrentTime, 'difference:', TimeSinceRentalEnded, 'limit:', StopMonitoringForRewardsLimit, SpartanBotCompositeStatusCode)
 
-          } // only 4
-        } // only 3
+            // let CurrentTime = new Date().getTime();
+            // let RentalEndTime = CurrentRental.RentalEndTime;
+            // let TimeSinceRentalEnded = CurrentTime - RentalEndTime
+            // let StopMonitoringForRewardsLimit = CurrentRental.StopMonitoringForRewardsLimit
+            
+
+            let sleeptime = 30 * 1000
+            if (SpartanBotCompositeStatusCode === "306") {            
+                let sleeptime = 15 * 1000
+                // let CurrentTime = new Date().getTime();
+                // let RentalEndTime = BotStatus.RentalEndTime;
+                // let TimeSinceRentalEnded = CurrentTime - RentalEndTime
+                // let StopMonitoringForRewardsLimit = CurrentRental.StopMonitoringForRewardsLimit
+                console.log('While SpartanBotCompositeStatusCode is 306; rewardsBeforeRentalStart:', Math.round((rewardsBeforeRentalStart)*1e3)/1e3, 'rental ended at:', RentalEndTime, 'current time:', CurrentTime, 'difference:', TimeSinceRentalEnded, 'limit:', StopMonitoringForRewardsLimit)
+                output(CurrentConditions, CurrentRental, UserInput.token, SpartanBotCompositeStatusCode, BestArbitrageCurrentConditions, LiveEstimatesFromMining, sleeptime, BotStatusCode)
+                await beforerentalsleep(sleeptime, SpartanBotCompositeStatusCode, CurrentConditions, CurrentRental, RentalCompositeStatusCode)
+                BotStatus = await botstatus(0, 0, CurrentConditions, CurrentRental, LiveEstimatesFromMining, 0, 0, 0, BestArbitrageCurrentConditions, UserInput.minMargin)
+                RentalEndTime = BotStatus.RentalEndTime
+                BotStatusCode = BotStatus.BotStatusCode
+                RentalCompositeStatusCode = 0
+                RewardsCompositeCode = 0
+                SpartanBotCompositeStatusCode = "" + RentalCompositeStatusCode + RewardsCompositeCode + BotStatusCode
+                console.log('While SpartanBotCompositeStatusCode is 306; rewardsBeforeRentalStart:', Math.round((rewardsBeforeRentalStart)*1e3)/1e3, 'rental ended at:', RentalEndTime, 'current time:', CurrentTime, 'difference:', TimeSinceRentalEnded, 'limit:', StopMonitoringForRewardsLimit)
+                output(CurrentConditions, CurrentRental, UserInput.token, SpartanBotCompositeStatusCode, BestArbitrageCurrentConditions, LiveEstimatesFromMining, sleeptime, BotStatusCode, RewardsCompositeCode)
+                CurrentConditions = await getcurrentconditions(UserInput.token, UserInput.tokenAlgo, UserInput.minDuration, tokensPerBlock, blocksPerHour)
+                CurrentRental = await getcurrentrental(CurrentConditions)
+                RentalCompositeStatusCode = CurrentRental.RentalCompositeStatusCode
+                SpartanBotCompositeStatusCode = (RentalCompositeStatusCode === 0) ? (306) : ("" + RentalCompositeStatusCode + RewardsCompositeCode + BotStatusCode)
+                await beforerentalsleep(sleeptime, SpartanBotCompositeStatusCode, CurrentConditions, CurrentRental, RentalCompositeStatusCode)
+              } else {
+                output(CurrentConditions, CurrentRental, UserInput.token, SpartanBotCompositeStatusCode, BestArbitrageCurrentConditions, LiveEstimatesFromMining, sleeptime, BotStatusCode)
+                await afterrentalsleep(sleeptime, SpartanBotCompositeStatusCode, CurrentConditions, CurrentRental, RentalCompositeStatusCode)
+              }
+          } // only 2
+
+          CurrentConditions = await getcurrentconditions(UserInput.token, UserInput.tokenAlgo, UserInput.minDuration, tokensPerBlock, blocksPerHour)
+          CurrentRental = await getcurrentrental(CurrentConditions)
+          let BestArbitrageCurrentConditions;
+          // = await bestarbitragecurrentconditions(NetworkPercent, UserInput, tokensPerBlock, blocksPerHour, CurrentConditions)
+          let LiveEstimatesFromMining = await liveestimatesfrommining(CurrentRental, CurrentConditions, UserInput, tokensPerBlock, blocksPerHour, rewardsBeforeRentalStart)
+          RentalCompositeStatusCode = (RentalCompositeStatusCode === undefined) ? (9) : (CurrentRental.RentalCompositeStatusCode)
+          RewardsCompositeCode = (RewardsCompositeCode === undefined) ? (9) : (CurrentConditions.RewardsCompositeCode)
+          
+          BotStatus = await botstatus(RentalCompositeStatusCode, RewardsCompositeCode, CurrentConditions, CurrentRental, LiveEstimatesFromMining, MinerSubStatusCode, RoundSharesSubStatusCode, CandidateBlocksSubStatusCode, BestArbitrageCurrentConditions, UserInput.minMargin)
+          BotStatusCode = (BotStatus === undefined) ? (9) : (BotStatus.BotStatusCode)
+            
+          SpartanBotCompositeStatusCode = "" + RentalCompositeStatusCode + RewardsCompositeCode + BotStatusCode
+        
+          let RentalEndTime = BotStatus.RentalEndTime;
+          let CurrentTime = new Date().getTime();
+          let TimeSinceRentalEnded = CurrentTime - RentalEndTime
+          let StopMonitoringForRewardsLimit = CurrentRental.StopMonitoringForRewardsLimit
+          
+          let sleeptime = 30 * 1000
+          // let RentalEndTime = BotStatus.RentalEndTime;
+          // let CurrentTime = new Date().getTime();
+          // let TimeSinceRentalEnded = CurrentTime - RentalEndTime
+          // let StopMonitoringForRewardsLimit = CurrentRental.StopMonitoringForRewardsLimit
+          console.log('While RentalCompositeStatusCode <= 2; rewardsBeforeRentalStart:', Math.round((rewardsBeforeRentalStart)*1e3)/1e3, 'rental ended at:', RentalEndTime, 'current time:', CurrentTime, 'difference:', TimeSinceRentalEnded, 'limit:', StopMonitoringForRewardsLimit, SpartanBotCompositeStatusCode)
+          
+          output(CurrentConditions, CurrentRental, UserInput.token, SpartanBotCompositeStatusCode, BestArbitrageCurrentConditions, LiveEstimatesFromMining, sleeptime, BotStatusCode)
+          await duringrentalsleep(sleeptime, SpartanBotCompositeStatusCode, CurrentConditions, CurrentRental, RentalCompositeStatusCode)
+        
+          
+        } // only 1
+
 
         CurrentConditions = await getcurrentconditions(UserInput.token, UserInput.tokenAlgo, UserInput.minDuration, tokensPerBlock, blocksPerHour)
         CurrentRental = await getcurrentrental(CurrentConditions)
         let BestArbitrageCurrentConditions = await bestarbitragecurrentconditions(NetworkPercent, UserInput, tokensPerBlock, blocksPerHour, CurrentConditions)
         let LiveEstimatesFromMining = await liveestimatesfrommining(CurrentRental, CurrentConditions, UserInput, tokensPerBlock, blocksPerHour, rewardsBeforeRentalStart)
+        
+        RentalCompositeStatusCode = (RentalCompositeStatusCode === undefined) ? (9) : (CurrentRental.RentalCompositeStatusCode)
+        RewardsCompositeCode = (CurrentConditions.RewardsCompositeCode === undefined) ? (9) : (CurrentConditions.RewardsCompositeCode)
+            
         BotStatus = await botstatus(RentalCompositeStatusCode, RewardsCompositeCode, CurrentConditions, CurrentRental, LiveEstimatesFromMining, MinerSubStatusCode, RoundSharesSubStatusCode, CandidateBlocksSubStatusCode, BestArbitrageCurrentConditions, UserInput.minMargin)
+        BotStatusCode = (BotStatus === undefined) ? (9) : (BotStatus.BotStatusCode)
+        SpartanBotCompositeStatusCode = "" + RentalCompositeStatusCode + RewardsCompositeCode + BotStatusCode
+        
         let RentalEndTime = BotStatus.RentalEndTime;
         let CurrentTime = new Date().getTime();
         let TimeSinceRentalEnded = CurrentTime - RentalEndTime
         let StopMonitoringForRewardsLimit = CurrentRental.StopMonitoringForRewardsLimit
-
-        RentalCompositeStatusCode = (RentalCompositeStatusCode === undefined) ? (9) : (CurrentRental.RentalCompositeStatusCode)
-        BotStatusCode = (BotStatus === undefined) ? (9) : (BotStatus.BotStatusCode)
-        RewardsCompositeCode = (RewardsCompositeCode === undefined) ? (9) : (CurrentConditions.RewardsCompositeCode)
-        SpartanBotCompositeStatusCode = "" + RentalCompositeStatusCode + RewardsCompositeCode + BotStatusCode
-        
-        console.log('While RentalCompositeStatusCode = 3; rewardsBeforeRentalStart:', Math.round((rewardsBeforeRentalStart)*1e3)/1e3, 'rental ended at:', RentalEndTime, 'current time:', CurrentTime, 'difference:', TimeSinceRentalEnded, 'limit:', StopMonitoringForRewardsLimit, SpartanBotCompositeStatusCode)
-
-        // let CurrentTime = new Date().getTime();
-        // let RentalEndTime = CurrentRental.RentalEndTime;
-        // let TimeSinceRentalEnded = CurrentTime - RentalEndTime
-        // let StopMonitoringForRewardsLimit = CurrentRental.StopMonitoringForRewardsLimit
-        
+        console.log('While RentalCompositeStatusCode <= 1; rewardsBeforeRentalStart:', Math.round((rewardsBeforeRentalStart)*1e3)/1e3, 'rental ended at:', RentalEndTime, 'current time:', CurrentTime, 'difference:', TimeSinceRentalEnded, 'limit:', StopMonitoringForRewardsLimit, SpartanBotCompositeStatusCode)
 
         let sleeptime = 30 * 1000
-        if (SpartanBotCompositeStatusCode === "306") {            
-            let sleeptime = 15 * 1000
-            // let CurrentTime = new Date().getTime();
-            // let RentalEndTime = BotStatus.RentalEndTime;
-            // let TimeSinceRentalEnded = CurrentTime - RentalEndTime
-            // let StopMonitoringForRewardsLimit = CurrentRental.StopMonitoringForRewardsLimit
-            console.log('While SpartanBotCompositeStatusCode is 306; rewardsBeforeRentalStart:', Math.round((rewardsBeforeRentalStart)*1e3)/1e3, 'rental ended at:', RentalEndTime, 'current time:', CurrentTime, 'difference:', TimeSinceRentalEnded, 'limit:', StopMonitoringForRewardsLimit)
-            output(CurrentConditions, CurrentRental, UserInput.token, SpartanBotCompositeStatusCode, BestArbitrageCurrentConditions, LiveEstimatesFromMining, sleeptime, BotStatusCode)
-            await beforerentalsleep(sleeptime, SpartanBotCompositeStatusCode, CurrentConditions, CurrentRental, RentalCompositeStatusCode)
-            BotStatus = await botstatus(0, 0, CurrentConditions, CurrentRental, LiveEstimatesFromMining, 0, 0, 0, BestArbitrageCurrentConditions, UserInput.minMargin)
-            RentalEndTime = BotStatus.RentalEndTime
-            BotStatusCode = BotStatus.BotStatusCode
-            RentalCompositeStatusCode = 0
-            RewardsCompositeCode = 0
-            SpartanBotCompositeStatusCode = "" + RentalCompositeStatusCode + RewardsCompositeCode + BotStatusCode
-            console.log('While SpartanBotCompositeStatusCode is 306; rewardsBeforeRentalStart:', Math.round((rewardsBeforeRentalStart)*1e3)/1e3, 'rental ended at:', RentalEndTime, 'current time:', CurrentTime, 'difference:', TimeSinceRentalEnded, 'limit:', StopMonitoringForRewardsLimit)
-            output(CurrentConditions, CurrentRental, UserInput.token, SpartanBotCompositeStatusCode, BestArbitrageCurrentConditions, LiveEstimatesFromMining, sleeptime, BotStatusCode, RewardsCompositeCode)
-            CurrentConditions = await getcurrentconditions(UserInput.token, UserInput.tokenAlgo, UserInput.minDuration, tokensPerBlock, blocksPerHour)
-            CurrentRental = await getcurrentrental(CurrentConditions)
-            RentalCompositeStatusCode = CurrentRental.RentalCompositeStatusCode
-            SpartanBotCompositeStatusCode = (RentalCompositeStatusCode === 0) ? (306) : ("" + RentalCompositeStatusCode + RewardsCompositeCode + BotStatusCode)
-            await beforerentalsleep(sleeptime, SpartanBotCompositeStatusCode, CurrentConditions, CurrentRental, RentalCompositeStatusCode)
-          } else {
-            output(CurrentConditions, CurrentRental, UserInput.token, SpartanBotCompositeStatusCode, BestArbitrageCurrentConditions, LiveEstimatesFromMining, sleeptime, BotStatusCode)
-            await afterrentalsleep(sleeptime, SpartanBotCompositeStatusCode, CurrentConditions, CurrentRental, RentalCompositeStatusCode)
-          }
-      } // only 2
+        output(CurrentConditions, CurrentRental, UserInput.token, SpartanBotCompositeStatusCode, BestArbitrageCurrentConditions, LiveEstimatesFromMining, sleeptime, BotStatusCode)
+        await duringrentalsleep(sleeptime, SpartanBotCompositeStatusCode, CurrentConditions, CurrentRental, RentalCompositeStatusCode)
+        
+      } // only 0
+
+      // let sleeptime = 15 * 1000
+      //           console.log('While SpartanBotCompositeStatusCode is 306; rewardsBeforeRentalStart:', Math.round((rewardsBeforeRentalStart)*1e3)/1e3, 'rental ended at:', RentalEndTime, 'current time:', CurrentTime, 'difference:', TimeSinceRentalEnded, 'limit:', StopMonitoringForRewardsLimit)
+      //           output(CurrentConditions, CurrentRental, UserInput.token, SpartanBotCompositeStatusCode, BestArbitrageCurrentConditions, LiveEstimatesFromMining, sleeptime, BotStatusCode)
+      //           await beforerentalsleep(sleeptime, SpartanBotCompositeStatusCode, CurrentConditions, CurrentRental, RentalCompositeStatusCode)
+      //           BotStatus = await botstatus(0, 0, CurrentConditions, CurrentRental, LiveEstimatesFromMining, 0, 0, 0, BestArbitrageCurrentConditions, UserInput.minMargin)
+      //           RentalEndTime = BotStatus.RentalEndTime
+      //           BotStatusCode = BotStatus.BotStatusCode
+      //           RentalCompositeStatusCode = 0
+      //           RewardsCompositeCode = 0
+      //           SpartanBotCompositeStatusCode = "" + RentalCompositeStatusCode + RewardsCompositeCode + BotStatusCode
+      //           console.log('While SpartanBotCompositeStatusCode is 306; rewardsBeforeRentalStart:', Math.round((rewardsBeforeRentalStart)*1e3)/1e3, 'rental ended at:', RentalEndTime, 'current time:', CurrentTime, 'difference:', TimeSinceRentalEnded, 'limit:', StopMonitoringForRewardsLimit)
+      //           output(CurrentConditions, CurrentRental, UserInput.token, SpartanBotCompositeStatusCode, BestArbitrageCurrentConditions, LiveEstimatesFromMining, sleeptime, BotStatusCode, RewardsCompositeCode)
+      //           CurrentConditions = await getcurrentconditions(UserInput.token, UserInput.tokenAlgo, UserInput.minDuration, tokensPerBlock, blocksPerHour)
+      //           CurrentRental = await getcurrentrental(CurrentConditions)
+      //           RentalCompositeStatusCode = CurrentRental.RentalCompositeStatusCode
+      //           SpartanBotCompositeStatusCode = (RentalCompositeStatusCode === 0) ? (306) : ("" + RentalCompositeStatusCode + RewardsCompositeCode + BotStatusCode)
+      //           await beforerentalsleep(sleeptime, SpartanBotCompositeStatusCode, CurrentConditions, CurrentRental, RentalCompositeStatusCode)
+
+
+
+      console.log('While RentalCompositeStatusCode >= 0; rewardsBeforeRentalStart:', Math.round((rewardsBeforeRentalStart)*1e3)/1e3, RentalCompositeStatusCode)
 
       CurrentConditions = await getcurrentconditions(UserInput.token, UserInput.tokenAlgo, UserInput.minDuration, tokensPerBlock, blocksPerHour)
+      RewardsCompositeCode = (CurrentConditions === undefined) ? (9) : (CurrentConditions.RewardsCompositeCode)
       CurrentRental = await getcurrentrental(CurrentConditions)
-      let BestArbitrageCurrentConditions;
-       // = await bestarbitragecurrentconditions(NetworkPercent, UserInput, tokensPerBlock, blocksPerHour, CurrentConditions)
+      let BestArbitrageCurrentConditions = await bestarbitragecurrentconditions(NetworkPercent, UserInput, tokensPerBlock, blocksPerHour, CurrentConditions)
       let LiveEstimatesFromMining = await liveestimatesfrommining(CurrentRental, CurrentConditions, UserInput, tokensPerBlock, blocksPerHour, rewardsBeforeRentalStart)
-      RentalCompositeStatusCode = (RentalCompositeStatusCode === undefined) ? (9) : (CurrentRental.RentalCompositeStatusCode)
-      RewardsCompositeCode = (RewardsCompositeCode === undefined) ? (9) : (CurrentConditions.RewardsCompositeCode)
-      
       BotStatus = await botstatus(RentalCompositeStatusCode, RewardsCompositeCode, CurrentConditions, CurrentRental, LiveEstimatesFromMining, MinerSubStatusCode, RoundSharesSubStatusCode, CandidateBlocksSubStatusCode, BestArbitrageCurrentConditions, UserInput.minMargin)
-      BotStatusCode = (BotStatus === undefined) ? (9) : (BotStatus.BotStatusCode)
-        
-      SpartanBotCompositeStatusCode = "" + RentalCompositeStatusCode + RewardsCompositeCode + BotStatusCode
-    
       let RentalEndTime = BotStatus.RentalEndTime;
       let CurrentTime = new Date().getTime();
       let TimeSinceRentalEnded = CurrentTime - RentalEndTime
       let StopMonitoringForRewardsLimit = CurrentRental.StopMonitoringForRewardsLimit
+
+      RentalCompositeStatusCode = (CurrentRental === undefined) ? (9) : (CurrentRental.RentalCompositeStatusCode)
+      BotStatusCode = (BotStatus === undefined) ? (9) : (BotStatus.BotStatusCode)
       
-      let sleeptime = 30 * 1000
-      // let RentalEndTime = BotStatus.RentalEndTime;
-      // let CurrentTime = new Date().getTime();
-      // let TimeSinceRentalEnded = CurrentTime - RentalEndTime
-      // let StopMonitoringForRewardsLimit = CurrentRental.StopMonitoringForRewardsLimit
-      console.log('While RentalCompositeStatusCode <= 2; rewardsBeforeRentalStart:', Math.round((rewardsBeforeRentalStart)*1e3)/1e3, 'rental ended at:', RentalEndTime, 'current time:', CurrentTime, 'difference:', TimeSinceRentalEnded, 'limit:', StopMonitoringForRewardsLimit, SpartanBotCompositeStatusCode)
+      SpartanBotCompositeStatusCode = "" + RentalCompositeStatusCode + RewardsCompositeCode + BotStatusCode
       
+
+      // console.log('While RentalCompositeStatusCode >= 0; rewardsBeforeRentalStart:', Math.round((rewardsBeforeRentalStart)*1e3)/1e3, 'rental ended at:', RentalEndTime, 'current time:', CurrentTime, 'difference:', TimeSinceRentalEnded, 'limit:', StopMonitoringForRewardsLimit, SpartanBotCompositeStatusCode)
+
+      let sleeptime = 15 * 1000
       output(CurrentConditions, CurrentRental, UserInput.token, SpartanBotCompositeStatusCode, BestArbitrageCurrentConditions, LiveEstimatesFromMining, sleeptime, BotStatusCode)
-      await duringrentalsleep(sleeptime, SpartanBotCompositeStatusCode, CurrentConditions, CurrentRental, RentalCompositeStatusCode)
-    
-      
-    } // only 1
-    CurrentConditions = await getcurrentconditions(UserInput.token, UserInput.tokenAlgo, UserInput.minDuration, tokensPerBlock, blocksPerHour)
-    CurrentRental = await getcurrentrental(CurrentConditions)
-    let BestArbitrageCurrentConditions = await bestarbitragecurrentconditions(NetworkPercent, UserInput, tokensPerBlock, blocksPerHour, CurrentConditions)
-    let LiveEstimatesFromMining = await liveestimatesfrommining(CurrentRental, CurrentConditions, UserInput, tokensPerBlock, blocksPerHour, rewardsBeforeRentalStart)
-    
-    RentalCompositeStatusCode = (RentalCompositeStatusCode === undefined) ? (9) : (CurrentRental.RentalCompositeStatusCode)
-    RewardsCompositeCode = (CurrentConditions.RewardsCompositeCode === undefined) ? (9) : (CurrentConditions.RewardsCompositeCode)
-        
-    BotStatus = await botstatus(RentalCompositeStatusCode, RewardsCompositeCode, CurrentConditions, CurrentRental, LiveEstimatesFromMining, MinerSubStatusCode, RoundSharesSubStatusCode, CandidateBlocksSubStatusCode, BestArbitrageCurrentConditions, UserInput.minMargin)
-    BotStatusCode = (BotStatus === undefined) ? (9) : (BotStatus.BotStatusCode)
-    SpartanBotCompositeStatusCode = "" + RentalCompositeStatusCode + RewardsCompositeCode + BotStatusCode
-    
-    let RentalEndTime = BotStatus.RentalEndTime;
-    let CurrentTime = new Date().getTime();
-    let TimeSinceRentalEnded = CurrentTime - RentalEndTime
-    let StopMonitoringForRewardsLimit = CurrentRental.StopMonitoringForRewardsLimit
-    console.log('While RentalCompositeStatusCode <= 1; rewardsBeforeRentalStart:', Math.round((rewardsBeforeRentalStart)*1e3)/1e3, 'rental ended at:', RentalEndTime, 'current time:', CurrentTime, 'difference:', TimeSinceRentalEnded, 'limit:', StopMonitoringForRewardsLimit, SpartanBotCompositeStatusCode)
-
-    let sleeptime = 30 * 1000
-    output(CurrentConditions, CurrentRental, UserInput.token, SpartanBotCompositeStatusCode, BestArbitrageCurrentConditions, LiveEstimatesFromMining, sleeptime, BotStatusCode)
-    await duringrentalsleep(sleeptime, SpartanBotCompositeStatusCode, CurrentConditions, CurrentRental, RentalCompositeStatusCode)
-    
-  } // only 0
-
-  // let sleeptime = 15 * 1000
-  //           console.log('While SpartanBotCompositeStatusCode is 306; rewardsBeforeRentalStart:', Math.round((rewardsBeforeRentalStart)*1e3)/1e3, 'rental ended at:', RentalEndTime, 'current time:', CurrentTime, 'difference:', TimeSinceRentalEnded, 'limit:', StopMonitoringForRewardsLimit)
-  //           output(CurrentConditions, CurrentRental, UserInput.token, SpartanBotCompositeStatusCode, BestArbitrageCurrentConditions, LiveEstimatesFromMining, sleeptime, BotStatusCode)
-  //           await beforerentalsleep(sleeptime, SpartanBotCompositeStatusCode, CurrentConditions, CurrentRental, RentalCompositeStatusCode)
-  //           BotStatus = await botstatus(0, 0, CurrentConditions, CurrentRental, LiveEstimatesFromMining, 0, 0, 0, BestArbitrageCurrentConditions, UserInput.minMargin)
-  //           RentalEndTime = BotStatus.RentalEndTime
-  //           BotStatusCode = BotStatus.BotStatusCode
-  //           RentalCompositeStatusCode = 0
-  //           RewardsCompositeCode = 0
-  //           SpartanBotCompositeStatusCode = "" + RentalCompositeStatusCode + RewardsCompositeCode + BotStatusCode
-  //           console.log('While SpartanBotCompositeStatusCode is 306; rewardsBeforeRentalStart:', Math.round((rewardsBeforeRentalStart)*1e3)/1e3, 'rental ended at:', RentalEndTime, 'current time:', CurrentTime, 'difference:', TimeSinceRentalEnded, 'limit:', StopMonitoringForRewardsLimit)
-  //           output(CurrentConditions, CurrentRental, UserInput.token, SpartanBotCompositeStatusCode, BestArbitrageCurrentConditions, LiveEstimatesFromMining, sleeptime, BotStatusCode, RewardsCompositeCode)
-  //           CurrentConditions = await getcurrentconditions(UserInput.token, UserInput.tokenAlgo, UserInput.minDuration, tokensPerBlock, blocksPerHour)
-  //           CurrentRental = await getcurrentrental(CurrentConditions)
-  //           RentalCompositeStatusCode = CurrentRental.RentalCompositeStatusCode
-  //           SpartanBotCompositeStatusCode = (RentalCompositeStatusCode === 0) ? (306) : ("" + RentalCompositeStatusCode + RewardsCompositeCode + BotStatusCode)
-  //           await beforerentalsleep(sleeptime, SpartanBotCompositeStatusCode, CurrentConditions, CurrentRental, RentalCompositeStatusCode)
-
-
-
-  console.log('While RentalCompositeStatusCode >= 0; rewardsBeforeRentalStart:', Math.round((rewardsBeforeRentalStart)*1e3)/1e3, RentalCompositeStatusCode)
-
-  CurrentConditions = await getcurrentconditions(UserInput.token, UserInput.tokenAlgo, UserInput.minDuration, tokensPerBlock, blocksPerHour)
-  RewardsCompositeCode = (CurrentConditions === undefined) ? (9) : (CurrentConditions.RewardsCompositeCode)
-  CurrentRental = await getcurrentrental(CurrentConditions)
-  let BestArbitrageCurrentConditions = await bestarbitragecurrentconditions(NetworkPercent, UserInput, tokensPerBlock, blocksPerHour, CurrentConditions)
-  let LiveEstimatesFromMining = await liveestimatesfrommining(CurrentRental, CurrentConditions, UserInput, tokensPerBlock, blocksPerHour, rewardsBeforeRentalStart)
-  BotStatus = await botstatus(RentalCompositeStatusCode, RewardsCompositeCode, CurrentConditions, CurrentRental, LiveEstimatesFromMining, MinerSubStatusCode, RoundSharesSubStatusCode, CandidateBlocksSubStatusCode, BestArbitrageCurrentConditions, UserInput.minMargin)
-  let RentalEndTime = BotStatus.RentalEndTime;
-  let CurrentTime = new Date().getTime();
-  let TimeSinceRentalEnded = CurrentTime - RentalEndTime
-  let StopMonitoringForRewardsLimit = CurrentRental.StopMonitoringForRewardsLimit
-
-  RentalCompositeStatusCode = (CurrentRental === undefined) ? (9) : (CurrentRental.RentalCompositeStatusCode)
-  BotStatusCode = (BotStatus === undefined) ? (9) : (BotStatus.BotStatusCode)
-  
-  SpartanBotCompositeStatusCode = "" + RentalCompositeStatusCode + RewardsCompositeCode + BotStatusCode
-  
-
-  // console.log('While RentalCompositeStatusCode >= 0; rewardsBeforeRentalStart:', Math.round((rewardsBeforeRentalStart)*1e3)/1e3, 'rental ended at:', RentalEndTime, 'current time:', CurrentTime, 'difference:', TimeSinceRentalEnded, 'limit:', StopMonitoringForRewardsLimit, SpartanBotCompositeStatusCode)
-
-  let sleeptime = 15 * 1000
-  output(CurrentConditions, CurrentRental, UserInput.token, SpartanBotCompositeStatusCode, BestArbitrageCurrentConditions, LiveEstimatesFromMining, sleeptime, BotStatusCode)
-  if (RentalCompositeStatusCode === 0) {
-    await beforerentalsleep(sleeptime, SpartanBotCompositeStatusCode, CurrentConditions, RentalCompositeStatusCode)
-    output(CurrentConditions, CurrentRental, UserInput.token, '306', BestArbitrageCurrentConditions, LiveEstimatesFromMining, sleeptime, BotStatusCode)
-    await beforerentalsleep(sleeptime, SpartanBotCompositeStatusCode, CurrentConditions, RentalCompositeStatusCode)
-  } else
-  await duringrentalsleep(sleeptime, SpartanBotCompositeStatusCode, CurrentConditions, RentalCompositeStatusCode)
-            
-                
-}
-
-
-
-
-
-
-
-
-
-    // while (RentalCompositeStatusCode < 8) { // this runs for all non-error codes      
-    //   CurrentConditions = await getcurrentconditions(UserInput.token, UserInput.tokenAlgo, UserInput.minDuration, tokensPerBlock, blocksPerHour)
-    //   CurrentRental = await getcurrentrental(CurrentConditions)
-    //   let BestArbitrageCurrentConditions = await bestarbitragecurrentconditions(NetworkPercent, UserInput, tokensPerBlock, blocksPerHour, CurrentConditions);
-    //   let LiveEstimatesFromMining;
-    //   BotStatus = await botstatus(RentalCompositeStatusCode, RewardsCompositeCode, CurrentConditions, CurrentRental, LiveEstimatesFromMining, MinerSubStatusCode, RoundSharesSubStatusCode, CandidateBlocksSubStatusCode, BestArbitrageCurrentConditions, UserInput.minMargin)
-                
-                          
-    //   while (RentalCompositeStatusCode <= 4) { // this runs for all 4 and below
-
-    //     while (RentalCompositeStatusCode <= 3) { //this runs for all 3 and below
-
-    //       while (RentalCompositeStatusCode <= 2) { // this runs for all 2 and below
-
-    //         while (RentalCompositeStatusCode <= 1) { // this runs for all 1 and 0
-
-    //           while (RentalCompositeStatusCode <= 0) { // this runs for 0 only
-                
-    //             rewardsBeforeRentalStart = CurrentConditions.rewardsTotal // turn off if something is interupted mid cycle
-    //             // rewardsBeforeRentalStart = 34198.95600; // turn on if something is interupted mid cycle
-
-    //             // let BestArbitrageCurrentConditions = await bestarbitragecurrentconditions(NetworkPercent, UserInput, tokensPerBlock, blocksPerHour, CurrentConditions);
-    //             // let LiveEstimatesFromMining;
-    //             let sleeptime = 60 * 1000
-    //             // BotStatus = await botstatus(RentalCompositeStatusCode, RewardsCompositeCode, CurrentConditions, CurrentRental, LiveEstimatesFromMining, MinerSubStatusCode, RoundSharesSubStatusCode, CandidateBlocksSubStatusCode, BestArbitrageCurrentConditions, UserInput.minMargin)
-                
-    //             RentalCompositeStatusCode = (RentalCompositeStatusCode === undefined) ? (9) ? (CurrentRental.RentalCompositeStatusCode)
-    //             BotStatusCode = (BotStatus === undefined) ? (9) : (BotStatus.BotStatusCode)
-    //             RewardsCompositeCode = (RewardsCompositeCode === undefined) ? (9) : (CurrentConditions.RewardsCompositeCode)
-    //             SpartanBotCompositeStatusCode = "" + RentalCompositeStatusCode + RewardsCompositeCode + BotStatusCode
-
-    //             // console.log('While RentalCompositeStatusCode <= 0; rewardsBeforeRentalStart:', Math.round((rewardsBeforeRentalStart)*1e3)/1e3)
-    //             output(CurrentConditions, CurrentRental, UserInput.token, SpartanBotCompositeStatusCode, BestArbitrageCurrentConditions, LiveEstimatesFromMining, sleeptime, BotStatusCode)
-    //             await beforerentalsleep(sleeptime, SpartanBotCompositeStatusCode, CurrentConditions, RentalCompositeStatusCode)
-    //             CurrentConditions = await getcurrentconditions(UserInput.token, UserInput.tokenAlgo, UserInput.minDuration, tokensPerBlock, blocksPerHour)
-    //             CurrentRental = await getcurrentrental(CurrentConditions)
-    //             RentalCompositeStatusCode = CurrentRental.RentalCompositeStatusCode
-    //             RewardsCompositeCode = CurrentConditions.RewardsCompositeCode
-    //           } // this is only run for 1
-    //           CurrentConditions = await getcurrentconditions(UserInput.token, UserInput.tokenAlgo, UserInput.minDuration, tokensPerBlock, blocksPerHour)
-    //           CurrentRental = await getcurrentrental(CurrentConditions)
-    //           RentalCompositeStatusCode = CurrentRental.RentalCompositeStatusCode
-    //           let LiveEstimatesFromMining = await liveestimatesfrommining(CurrentRental, CurrentConditions, UserInput, tokensPerBlock, blocksPerHour, rewardsBeforeRentalStart)
-    //           let BestArbitrageCurrentConditions;
-    //           BotStatus = await botstatus(RentalCompositeStatusCode, RewardsCompositeCode, CurrentConditions, CurrentRental, LiveEstimatesFromMining, MinerSubStatusCode, RoundSharesSubStatusCode, CandidateBlocksSubStatusCode, BestArbitrageCurrentConditions, UserInput.minMargin)
-    //           BotStatusCode = (BotStatus === undefined) ? (9) : (BotStatus.BotStatusCode)
-    //           SpartanBotCompositeStatusCode = "" + RentalCompositeStatusCode + CurrentConditions.RewardsCompositeCode + BotStatusCode
-    //           // console.log('While RentalCompositeStatusCode <= 1; rewardsBeforeRentalStart:', Math.round((rewardsBeforeRentalStart)*1e3)/1e3)
-    //           let sleeptime = 60 * 1000
-    //           output(CurrentConditions, CurrentRental, UserInput.token, SpartanBotCompositeStatusCode, BestArbitrageCurrentConditions, LiveEstimatesFromMining, sleeptime, BotStatusCode)
-    //           await duringrentalsleep(sleeptime, SpartanBotCompositeStatusCode, CurrentConditions, CurrentRental, RentalCompositeStatusCode)
-    //         } // this is only run for 2
-    //         CurrentConditions = await getcurrentconditions(UserInput.token, UserInput.tokenAlgo, UserInput.minDuration, tokensPerBlock, blocksPerHour)
-    //         CurrentRental = await getcurrentrental(CurrentConditions)
-    //         let LiveEstimatesFromMining = await liveestimatesfrommining(CurrentRental, CurrentConditions, UserInput, tokensPerBlock, blocksPerHour, rewardsBeforeRentalStart)
-    //         let BestArbitrageCurrentConditions;
-    //         BotStatus = await botstatus(RentalCompositeStatusCode, RewardsCompositeCode, CurrentConditions, CurrentRental, LiveEstimatesFromMining, MinerSubStatusCode, RoundSharesSubStatusCode, CandidateBlocksSubStatusCode, BestArbitrageCurrentConditions, UserInput.minMargin)
-    //         BotStatusCode = BotStatus.BotStatusCode
-    //         RentalCompositeStatusCode = (CurrentRental.rentalPercentComplete < 1) ? (2) : (3)
-    //         SpartanBotCompositeStatusCode = "" + RentalCompositeStatusCode + CurrentConditions.RewardsCompositeCode + BotStatusCode
-    //         // console.log('While RentalCompositeStatusCode <= 2; rewardsBeforeRentalStart:', Math.round((rewardsBeforeRentalStart)*1e3)/1e3)
-    //         let sleeptime = 30 * 1000
-    //         output(CurrentConditions, CurrentRental, UserInput.token, SpartanBotCompositeStatusCode, BestArbitrageCurrentConditions, LiveEstimatesFromMining, sleeptime, BotStatusCode)
-    //           await duringrentalsleep(sleeptime, SpartanBotCompositeStatusCode, CurrentConditions, CurrentRental, RentalCompositeStatusCode)
-            
-    //       } // this is only run for 3
-    //       CurrentConditions = await getcurrentconditions(UserInput.token, UserInput.tokenAlgo, UserInput.minDuration, tokensPerBlock, blocksPerHour)
-    //       CurrentRental = await getcurrentrental(CurrentConditions)
-    //       let LiveEstimatesFromMining = await liveestimatesfrommining(CurrentRental, CurrentConditions, UserInput, tokensPerBlock, blocksPerHour, rewardsBeforeRentalStart)
-    //       RentalCompositeStatusCode = CurrentRental.RentalCompositeStatusCode
-    //       RewardsCompositeCode = CurrentRental.RewardsCompositeCode
-    //       let BestArbitrageCurrentConditions = await bestarbitragecurrentconditions(NetworkPercent, UserInput, tokensPerBlock, blocksPerHour, CurrentConditions);
-    //       BotStatus = await botstatus(RentalCompositeStatusCode, RewardsCompositeCode, CurrentConditions, CurrentRental, LiveEstimatesFromMining, MinerSubStatusCode, RoundSharesSubStatusCode, CandidateBlocksSubStatusCode, BestArbitrageCurrentConditions, UserInput.minMargin)
-    //       BotStatusCode = BotStatus.BotStatusCode
-    //       let RentalEndTime = BotStatus.RentalEndTime;
-    //       let CurrentTime = new Date().getTime();
-    //       let TimeSinceRentalEnded = CurrentTime - RentalEndTime
-    //       let StopMonitoringForRewardsLimit = CurrentRental.StopMonitoringForRewardsLimit
-    //       SpartanBotCompositeStatusCode = "" + RentalCompositeStatusCode + RewardsCompositeCode + BotStatusCode
-    //       // console.log('While RentalCompositeStatusCode <= 3; rewardsBeforeRentalStart:', Math.round((rewardsBeforeRentalStart)*1e3)/1e3, 'rental ended at:', RentalEndTime, 'current time:', CurrentTime, 'difference:', TimeSinceRentalEnded, 'limit:', StopMonitoringForRewardsLimit, SpartanBotCompositeStatusCode)
-    //       let sleeptime = 60 * 1000
-    //       if (SpartanBotCompositeStatusCode === "306") {            
-    //         let LiveEstimatesFromMining = await liveestimatesfrommining(CurrentRental, CurrentConditions, UserInput, tokensPerBlock, blocksPerHour, rewardsBeforeRentalStart);
-    //         let BestArbitrageCurrentConditions = await bestarbitragecurrentconditions(NetworkPercent, UserInput, tokensPerBlock, blocksPerHour, CurrentConditions);
-    //         CurrentConditions = await getcurrentconditions(UserInput.token, UserInput.tokenAlgo, UserInput.minDuration, tokensPerBlock, blocksPerHour)
-    //         CurrentRental = await getcurrentrental(CurrentConditions)
-    //         RentalCompositeStatusCode = CurrentRental.RentalCompositeStatusCode
-    //         RewardsCompositeCode = CurrentRental.RewardsCompositeCode
-    //         BotStatus = await botstatus(RentalCompositeStatusCode, RewardsCompositeCode, CurrentConditions, CurrentRental, LiveEstimatesFromMining, MinerSubStatusCode, RoundSharesSubStatusCode, CandidateBlocksSubStatusCode, BestArbitrageCurrentConditions, UserInput.minMargin)
-    //         BotStatusCode = BotStatus.BotStatusCode
-    //         SpartanBotCompositeStatusCode = "" + RentalCompositeStatusCode + RewardsCompositeCode + BotStatusCode
-    //         let RentalEndTime = BotStatus.RentalEndTime;
-    //         let CurrentTime = new Date().getTime();
-    //         let TimeSinceRentalEnded = CurrentTime - RentalEndTime
-    //         let StopMonitoringForRewardsLimit = CurrentRental.StopMonitoringForRewardsLimit
-    //         output(CurrentConditions, CurrentRental, UserInput.token, SpartanBotCompositeStatusCode, BestArbitrageCurrentConditions, LiveEstimatesFromMining, sleeptime, BotStatusCode)
-
-    //         BotStatus = await botstatus(0, 0, CurrentConditions, CurrentRental, LiveEstimatesFromMining, 0, 0, 0, BestArbitrageCurrentConditions, UserInput.minMargin)
-    //         BotStatusCode = BotStatus.BotStatusCode
-    //         RentalCompositeStatusCode = 0
-    //         RewardsCompositeCode = 0
-    //         SpartanBotCompositeStatusCode = "" + RentalCompositeStatusCode + RewardsCompositeCode + BotStatusCode
-    //         output(CurrentConditions, CurrentRental, UserInput.token, SpartanBotCompositeStatusCode, BestArbitrageCurrentConditions, LiveEstimatesFromMining, sleeptime, BotStatusCode)
-
-    //         RentalCompositeStatusCode = CurrentRental.RentalCompositeStatusCode
-    //         // console.log('While SpartanBotCompositeStatusCode is 306; rewardsBeforeRentalStart:', Math.round((rewardsBeforeRentalStart)*1e3)/1e3, 'rental ended at:', RentalEndTime, 'current time:', CurrentTime, 'difference:', TimeSinceRentalEnded, 'limit:', StopMonitoringForRewardsLimit)
-    //         SpartanBotCompositeStatusCode = (RentalCompositeStatusCode === 0) ? (306) : ("" + RentalCompositeStatusCode + RewardsCompositeCode + BotStatusCode)
-    //         await beforerentalsleep(sleeptime, SpartanBotCompositeStatusCode, CurrentConditions, CurrentRental, RentalCompositeStatusCode)
-    //       } else {
-    //         output(CurrentConditions, CurrentRental, UserInput.token, SpartanBotCompositeStatusCode, BestArbitrageCurrentConditions, LiveEstimatesFromMining, sleeptime, BotStatusCode)
-    //         await afterrentalsleep(sleeptime, SpartanBotCompositeStatusCode, CurrentConditions, CurrentRental, RentalCompositeStatusCode)
-    //       }
-    //     } // this is only run for 4 - think about if this also needs a RentalCompositeStatusCodeOverride
-    //     RentalCompositeStatusCode = CurrentRental.RentalCompositeStatusCode
-    //     let BestArbitrageCurrentConditions;
-    //     let LiveEstimatesFromMining = await liveestimatesfrommining(CurrentRental, CurrentConditions, UserInput, tokensPerBlock, blocksPerHour, rewardsBeforeRentalStart);
-      
-    //     BotStatus = await botstatus(RentalCompositeStatusCode, RewardsCompositeCode, CurrentConditions, CurrentRental, LiveEstimatesFromMining, MinerSubStatusCode, RoundSharesSubStatusCode, CandidateBlocksSubStatusCode, BestArbitrageCurrentConditions, UserInput.minMargin)
-    //     BotStatusCode = BotStatus.BotStatusCode
-    //     SpartanBotCompositeStatusCode = "" + RentalCompositeStatusCode + CurrentConditions.RewardsCompositeCode + BotStatusCode
-    //     // console.log('While RentalCompositeStatusCode <= 4; rewardsBeforeRentalStart:', Math.round((rewardsBeforeRentalStart)*1e3)/1e3)
-    //     let sleeptime = 60 * 1000
-    //     output(CurrentConditions, CurrentRental, UserInput.token, SpartanBotCompositeStatusCode, BestArbitrageCurrentConditions, LiveEstimatesFromMining, sleeptime, BotStatusCode)
-    //     await duringrentalsleep(sleeptime, SpartanBotCompositeStatusCode, CurrentConditions, CurrentRental, RentalCompositeStatusCode)
-    //   } // this is only run for 5
-    //   // CurrentConditions = await getcurrentconditions(UserInput.token, UserInput.tokenAlgo, UserInput.minDuration, tokensPerBlock, blocksPerHour)
-    //   // CurrentRental = await getcurrentrental(CurrentConditions, RentalCompositeStatusCodeOverride)
-    //   RentalCompositeStatusCode = CurrentRental.RentalCompositeStatusCode
-    //   // let LiveEstimatesFromMining = await liveestimatesfrommining(CurrentRental, CurrentConditions, UserInput, tokensPerBlock, blocksPerHour, rewardsBeforeRentalStart);
-    //   // let BestArbitrageCurrentConditions = await bestarbitragecurrentconditions(NetworkPercent, UserInput, tokensPerBlock, blocksPerHour, CurrentConditions);
-    //   // BotStatus = await botstatus(RentalCompositeStatusCode, RewardsCompositeCode, CurrentConditions, CurrentRental, LiveEstimatesFromMining, MinerSubStatusCode, RoundSharesSubStatusCode, CandidateBlocksSubStatusCode, BestArbitrageCurrentConditions, UserInput.minMargin)
-    //   BotStatusCode = BotStatus.BotStatusCode
-    //   SpartanBotCompositeStatusCode = "" + RentalCompositeStatusCode + CurrentConditions.RewardsCompositeCode + BotStatusCode
-    //   // console.log('While RentalCompositeStatusCode <= 5; rewardsBeforeRentalStart:', Math.round((rewardsBeforeRentalStart)*1e3)/1e3, SpartanBotCompositeStatusCode)
-    //   let sleeptime = 60 * 1000
-    //   output(CurrentConditions, CurrentRental, UserInput.token, SpartanBotCompositeStatusCode, BestArbitrageCurrentConditions, LiveEstimatesFromMining, sleeptime, BotStatusCode)
-    //   await duringrentalsleep(sleeptime, SpartanBotCompositeStatusCode, CurrentConditions, CurrentRental, RentalCompositeStatusCode)
-    // }
+      if (RentalCompositeStatusCode === 0) {
+        await beforerentalsleep(sleeptime, SpartanBotCompositeStatusCode, CurrentConditions, RentalCompositeStatusCode)
+        output(CurrentConditions, CurrentRental, UserInput.token, '306', BestArbitrageCurrentConditions, LiveEstimatesFromMining, sleeptime, BotStatusCode)
+        await beforerentalsleep(sleeptime, SpartanBotCompositeStatusCode, CurrentConditions, RentalCompositeStatusCode)
+      } else
+      await duringrentalsleep(sleeptime, SpartanBotCompositeStatusCode, CurrentConditions, RentalCompositeStatusCode)                
+    }
 
 }).catch(err => console.log('err', err))
