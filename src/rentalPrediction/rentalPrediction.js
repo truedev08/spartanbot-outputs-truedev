@@ -1265,8 +1265,8 @@ class RentalPrediction {
       let orderBookScrypt = await this.provider.provider.getOrderBook('SCRYPT')
       let totalSpeedScryptUSA = orderBookScrypt.stats.USA.totalSpeed;
       let totalSpeedScryptEU = orderBookScrypt.stats.EU.totalSpeed;
-      let PriceRentalStandardKawpowUSA = Math.round(( (10 * summariesKawpowUSA.summaries['USA,KAWPOW'].payingPrice) + 0.0002 )*1e4)/1e4
-      let PriceRentalStandardKawpowEU = Math.round(( (10 * summariesKawpowEU.summaries['EU,KAWPOW'].payingPrice) + 0.0002 )*1e4)/1e4
+      let PriceRentalStandardKawpowUSA = Math.round(( (10000 * summariesKawpowUSA.summaries['USA,KAWPOW'].payingPrice) + 0.002 )*1e4)/1e4
+      let PriceRentalStandardKawpowEU = Math.round(( (10000 * summariesKawpowEU.summaries['EU,KAWPOW'].payingPrice) + 0.002 )*1e4)/1e4
       let PriceRentalStandardScryptUSA = Math.round(( 10000 * summariesScryptUSA.summaries['USA,SCRYPT'].payingPrice )*1e4)/1e4
       let PriceRentalStandardScryptEU = Math.round(( 10000 * summariesScryptEU.summaries['EU,SCRYPT'].payingPrice )*1e4)/1e4
       // console.log('PriceRentalStandardKawpowUSA:', PriceRentalStandardKawpowUSA)
@@ -1472,8 +1472,9 @@ class RentalPrediction {
                     let Poolhashrate = Math.round((data.hashrate / marketFactor)*1e3)/1e3;
                     let blockheight = data.nodes[0].height
                     let avgBlockTime = data.nodes[0].avgBlockTime
-                    let poolluck = data.luck
-                      resolve({networkhashps, Networkhashrate, Poolhashrate, blockheight, avgBlockTime, poolluck});
+                    // let poolluck = data.luck
+                    // console.log(data)
+                      resolve({networkhashps, Networkhashrate, Poolhashrate, blockheight, avgBlockTime});
                   });
                 }
               })
@@ -1603,7 +1604,7 @@ class RentalPrediction {
         let networkhashps = Rvn2MinersStats.networkhashps;
         let Networkhashrate = Rvn2MinersStats.Networkhashrate;
         let blockheight = Rvn2MinersStats.blockheight;
-        let poolluck = Rvn2MinersStats.poolluck;
+        // let poolluck = Rvn2MinersStats.poolluck;
         let avgBlockTime = Rvn2MinersStats.avgBlockTime;
 
         let Rvn2minersBlocks = await rvn2minersblocks();
@@ -1634,7 +1635,7 @@ class RentalPrediction {
         let RoundSharesSubStatusCode = (roundShares === 0) ? (0) : (1)
         // console.log('MinerSubStatusCode:', MinerSubStatusCode, MinerSubStatusCodes[MinerSubStatusCode])
         let RewardsCompositeCode = (MinerSubStatusCode === 1) ? (Math.max(RoundSharesSubStatusCode,CandidateBlocksSubStatusCode, workersOnline)) : ((MinerSubStatusCode === 2)?(1):((MinerSubStatusCode === 0)?(0):((MinerSubStatusCode === 4)?(0):('error1234'))))
-        return {  workersOnline, currentHashrate, currentHashrateReadable, rewardsBeforeRental, rewardsTotal, earnedRewards, rewardsStillPending, roundShares, networkhashps, Networkhashrate, blockheight, MinerSubStatusCode, RoundSharesSubStatusCode, CandidateBlocksSubStatusCode, RewardsCompositeCode, candidateheight, poolluck, avgBlockTime, luck1024, luck256, luck128, luck64, bestLuck, currentlyLucky, luckTrend};
+        return {  workersOnline, currentHashrate, currentHashrateReadable, rewardsBeforeRental, rewardsTotal, earnedRewards, rewardsStillPending, roundShares, networkhashps, Networkhashrate, blockheight, MinerSubStatusCode, RoundSharesSubStatusCode, CandidateBlocksSubStatusCode, RewardsCompositeCode, candidateheight, avgBlockTime, luck1024, luck256, luck128, luck64, bestLuck, currentlyLucky, luckTrend};
       }
 
       let rewardsBeforeRental;
@@ -1654,7 +1655,7 @@ class RentalPrediction {
       let RoundSharesSubStatusCode = DataFromPool.RoundSharesSubStatusCode;
       let CandidateBlocksSubStatusCode = DataFromPool.CandidateBlocksSubStatusCode;
       let candidateheight = DataFromPool.candidateheight;
-      let poolluck = DataFromPool.poolluck;
+      // let poolluck = DataFromPool.poolluck;
       let avgBlockTime = DataFromPool.avgBlockTime;
       let luck1024 = DataFromPool.luck1024;
       let luck256 = DataFromPool.luck256;
@@ -1809,8 +1810,10 @@ class RentalPrediction {
       let TokenPair = Exchanges.TokenPair;
       let MarketPricePerTokenInBtc = Exchanges.MarketPricePerTokenInBtc;
       let MaxPercentFromAvailRigs = (marketpreferenceKawpow === 'EU') ? (totalSpeedKawpowEU * 1 / Networkhashrate) : (totalSpeedKawpowUSA / Networkhashrate)
-      // let MaxPercentFromAvailBal = UsersBalance / (UsersBalance + (minDuration * PriceRentalStandard/24 * Networkhashrate))
-      let MaxPercent = Math.min(MaxPercentFromAvailRigs, .99)
+      let suggestedMinRentalDuration = Math.round((9 / (myPoolShare/100 * blocksPerHour / luck64))*1e3)/1e3
+      let MaxPercentFromAvailBal = UsersBalance / (UsersBalance + (suggestedMinRentalDuration * PriceRentalStandard/24 * Networkhashrate))
+      // console.log(MaxPercentFromAvailBal)
+      let MaxPercent = Math.min(MaxPercentFromAvailBal,MaxPercentFromAvailRigs, .35)
 
       async function calculations(Networkhashrate, PriceRentalStandard, MarketPricePerTokenInBtc, tokensPerBlock, blocksPerHour) {
         let HourlyMiningCostInBtc = Math.round((Networkhashrate * PriceRentalStandard / 24)*1e6)/1e6;
@@ -1881,11 +1884,10 @@ class RentalPrediction {
       let MinPercentFromNHMinLimit = Minimums.MinPercentFromNHMinLimit;
       let MinPercentFromBittrexMinWithdrawal = Minimums.MinPercentFromBittrexMinWithdrawal;
       let HighestMinimum = Minimums.HighestMinimum
-      let suggestedMinRentalDuration = Math.round((6 / (myPoolShare/100 * blocksPerHour / luck64))*1e3)/1e3
 
       return {UsersBalance, PriceRentalStandard, marketFactor, MarketFactorName, workersOnline, currentHashrate, currentHashrateReadable, rewardsTotal,
         earnedRewards, rewardsStillPending, roundShares, networkhashps, Networkhashrate, blockheight, MinerSubStatusCode, RewardsCompositeCode, RoundSharesSubStatusCode, CandidateBlocksSubStatusCode,
-        candidateheight, poolluck, avgBlockTime, PriceUsdPerBtcOnCoinbase, PriceUsdPerBtcOnBittrex, MarketPriceUsdPerBtc, TokenPair, MarketPricePerTokenInBtc, MaxPercent, HourlyMiningCostInBtc, HourlyMiningValueInBtc, 
+        candidateheight, avgBlockTime, PriceUsdPerBtcOnCoinbase, PriceUsdPerBtcOnBittrex, MarketPriceUsdPerBtc, TokenPair, MarketPricePerTokenInBtc, MaxPercent, HourlyMiningCostInBtc, HourlyMiningValueInBtc, 
         MinPercentFromNHMinAmount, MinPercentFromNHMinLimit, MinPercentFromBittrexMinWithdrawal, HighestMinimum, leadingMinerShare, myPoolShare, poolDominanceMultiplier, secondPlaceMinerShare, 
         luck1024, luck256, luck128, luck64, bestLuck, currentlyLucky, luckTrend, luck64rounded, currentlyLuckyWords, marketpreferenceKawpow, suggestedMinRentalDuration}
 
@@ -2057,10 +2059,10 @@ class RentalPrediction {
     var ListEstValueUsd = new Array();
     var AboveMinsList = new Array();
     var ExpectedPoolDominanceMultiplierList = new Array();
-    let MaxPercentAsInt = CurrentConditions.MaxPercent * 1000
+    let MaxPercentAsInt = CurrentConditions.MaxPercent * 100
     var listOfNetworkPercentValuesToTry = [];
     for (var i = 1; i <= MaxPercentAsInt; i++) {
-    listOfNetworkPercentValuesToTry.push(i/1000);
+    listOfNetworkPercentValuesToTry.push(i/100);
     }
     listOfNetworkPercentValuesToTry.forEach(tryListOfNetworkPercentValues);
     
@@ -2085,13 +2087,13 @@ class RentalPrediction {
         CurrentConditions.PriceRentalStandard,
         CurrentConditions.luck64,
         CurrentConditions)
-        
+
         //console.log(CurrentConditions);
-        
+
 
       let ArbSize = AlwaysMineModeEstimates.SpartanMerchantArbitragePrcnt
       let Profit = AlwaysMineModeEstimates.ProfitUsd
-      let NetworkPercent = Math.floor((AlwaysMineModeEstimates.NetworkPercent)*1e4)/1e4
+      let NetworkPercent = AlwaysMineModeEstimates.NetworkPercent
       let CostOfRentalInUsdAtTheseVars = AlwaysMineModeEstimates.CostOfRentalInUsd
       let RentTheseVars = AlwaysMineModeEstimates.Rent
       let PriceTheseVars = AlwaysMineModeEstimates.price
@@ -2101,7 +2103,7 @@ class RentalPrediction {
       let ListEstValueTheseVars = AlwaysMineModeEstimates.ValueOfEstTokensAtMarketPrice
       let ListEstValueUsdTheseVars = AlwaysMineModeEstimates.ValueOfEstTokensAtMktPriceUsd
       let ExpectedPoolDominanceMultiplierTheseVars = AlwaysMineModeEstimates.ExpectedPoolDominanceMultiplier
-      let lowestArb = -100
+      let lowestArb = -10
       let AboveMinimums = (CurrentConditions.HighestMinimum < item) 
       let AboveMinsTheseVars = AboveMinimums
       if (CurrentConditions.HighestMinimum < item) {
@@ -2173,11 +2175,11 @@ class RentalPrediction {
     }
     let Values = await tryListOfNetworkPercentValues()
 
-    console.table(Values);
+    // console.table(Values);
     
 
-    let ProjectedProfitInUsd = Math.floor((Values[Values.length - 25])*1e2)/1e2;
-    let ProjectedProfitMargin = Math.floor((Values[Values.length - 23])*1e2)/1e2;
+    let ProjectedProfitInUsd = (Values[Values.length - 25])
+    let ProjectedProfitMargin = (Values[Values.length - 23])
     let HashrateToRent = Values[Values.length - 9];
     let MarketFactorName = CurrentConditions.MarketFactorName;
     let RentalDuration = Values[Values.length - 5];
@@ -2333,9 +2335,9 @@ class RentalPrediction {
   }
 
 
-  async  botstatus(RentalCompositeStatusCode, RewardsCompositeCode, CurrentConditions, CurrentRental, LiveEstimatesFromMining, MinerSubStatusCode, RoundSharesSubStatusCode, CandidateBlocksSubStatusCode, BestArbitrageCurrentConditions, minMargin) {
+  async botstatus(RentalCompositeStatusCode, RewardsCompositeCode, CurrentConditions, CurrentRental, LiveEstimatesFromMining, MinerSubStatusCode, RoundSharesSubStatusCode, CandidateBlocksSubStatusCode, BestArbitrageCurrentConditions, minMargin) {
     let _this = this
-    
+
     let RentalEndTime = (CurrentRental.RentalCompositeStatusCode >= 7)?(0):(Date.parse(CurrentRental.RentalOrders.endTs))
     let CurrentTime = new Date().getTime();
     let TimeSinceRentalEnded = CurrentTime - RentalEndTime
@@ -2344,6 +2346,7 @@ class RentalPrediction {
 
     try{
       let UsersRequestedMargin = _this.UserInput.minMargin 
+      console.table(LiveEstimatesFromMining)
       let currentlyProfitable = (LiveEstimatesFromMining === undefined) ? (false) : (LiveEstimatesFromMining.SpartanMerchantArbitragePrcnt > 0)
       let currentlyAboveUsersMinMargin = (LiveEstimatesFromMining === undefined) ? (false) : (LiveEstimatesFromMining.SpartanMerchantArbitragePrcnt > _this.UserInput.minMargin)
       if (RentalCompositeStatusCode === 0) { // no rental
@@ -2364,6 +2367,7 @@ class RentalPrediction {
             let projectedProfitable = (BestArbitrageCurrentConditions === undefined) ? (false) : (BestArbitrageCurrentConditions.ProjectedProfitMargin > 0)
             let projectedAboveUsersMinMargin = (BestArbitrageCurrentConditions === undefined) ? (false) : (BestArbitrageCurrentConditions.ProjectedProfitMargin > minMargin)    
             let BotStatusCode = (projectedProfitable) ? ( (projectedAboveUsersMinMargin) ? (1):(2)) : (3)
+            console.log(RentalCompositeStatusCode, RewardsCompositeCode, BotStatusCode)
             return {BotStatusCode, projectedProfitable, projectedAboveUsersMinMargin}   
           }
           else if (RentalCompositeStatusCode > 7) { //RentalCompositeStatusCode is 8 or 9, something is down
@@ -2382,6 +2386,7 @@ class RentalPrediction {
         else if (RentalCompositeStatusCode < 3) { //RentalCompositeStatusCode is 1 or 2, its minining
           let RewardsCompositeCode = CurrentConditions.RewardsCompositeCode
           let BotStatusCode = (currentlyProfitable === undefined)?(3):((currentlyProfitable)?((currentlyAboveUsersMinMargin)?(1):(2)):(3))
+          console.log(RentalCompositeStatusCode, RewardsCompositeCode, BotStatusCode)
           let RentalEndTime = Date.parse(CurrentRental.RentalOrders.endTs) 
           let StopMonitoringForRewardsLimit = CurrentRental.StopMonitoringForRewardsLimit
           return {BotStatusCode, RewardsCompositeCode, currentlyProfitable, currentlyAboveUsersMinMargin, RentalEndTime, StopMonitoringForRewardsLimit}
@@ -2395,6 +2400,7 @@ class RentalPrediction {
           // let TimeSinceRentalEnded = CurrentTime - RentalEndTime
           // let StopMonitoringForRewardsLimit = CurrentRental.StopMonitoringForRewardsLimit
           let BotStatusCode = (RewardsCompositeCode === 1) ? ((currentlyProfitable)?((currentlyAboveUsersMinMargin)?(1):(2)):(3)) : ((RewardsCompositeCode === 0)?((StopMonitoringForRewardsLimit < TimeSinceRentalEnded)?(6):((currentlyProfitable)?((currentlyAboveUsersMinMargin)?(1):(2)):(3))):('error'))
+            console.log(RentalCompositeStatusCode, RewardsCompositeCode, BotStatusCode)
           return {BotStatusCode, RewardsCompositeCode , currentlyProfitable, currentlyAboveUsersMinMargin, RentalEndTime, StopMonitoringForRewardsLimit}
         }
       }
