@@ -4,7 +4,7 @@ require("dotenv").config();
 
 const {API_KEY, API_SECRET, ORG_ID} = process.env;
 
-let workerAddress = 'RRj8fK1WRUr6mHWxwMF3Cb7X35HcmF9Pet'; //TrueDevs RVN worker
+let workerAddress = 'RGystomrH55DYMJKZw4Hkp89vxV1DTTSuN'; //Devons RVN worker
 
 let settingsNiceHash = { //martin
   type: 'NiceHash',
@@ -90,21 +90,21 @@ function test() {
         let rewardsBeforeRentalStart = currentCondition.rewardsTotal
         let RentalCompositeStatusCode = (currentRental === undefined) ? (9) : (currentRental.RentalCompositeStatusCode)
         let RewardsCompositeCode = (currentCondition === undefined) ? (9) : (currentCondition.RewardsCompositeCode)
-        let LiveEstimatesFromMining = rentalProvider.liveestimatesfrommining(currentRental, currentCondition, UserInput, tokensPerBlock, blocksPerHour, rewardsBeforeRentalStart)
+        // let LiveEstimatesFromMining = rentalProvider.liveestimatesfrommining(currentRental, currentCondition, UserInput, tokensPerBlock, blocksPerHour, rewardsBeforeRentalStart)
+        rentalProvider.liveestimatesfrommining(currentRental, currentCondition, UserInput, tokensPerBlock, blocksPerHour, rewardsBeforeRentalStart).then((LiveEstimatesFromMining) => {
+          console.table(LiveEstimatesFromMining)
         let MinerSubStatusCode = (currentCondition === undefined) ? (9) : (currentCondition.MinerSubStatusCode)
         let RoundSharesSubStatusCode = (currentCondition === undefined) ? (9) : (currentCondition.RoundSharesSubStatusCode)
         let CandidateBlocksSubStatusCode = (currentCondition === undefined) ? (9) : (currentCondition.CandidateBlocksSubStatusCode)
         let NetworkPercent;
-        let BestArbitrageCurrentConditions = rentalProvider.bestarbitragecurrentconditions(NetworkPercent, UserInput, tokensPerBlock, blocksPerHour, currentCondition).then(res => console.log(res))
-        let minMargin = .10
-
-        //console.log(currentRental);
-        
-        rentalProvider.botstatus(RentalCompositeStatusCode, RewardsCompositeCode, currentCondition, currentRental, LiveEstimatesFromMining, MinerSubStatusCode, RoundSharesSubStatusCode, CandidateBlocksSubStatusCode, BestArbitrageCurrentConditions, minMargin).then((res) => {
-          console.log(res);
-          
+        rentalProvider.bestarbitragecurrentconditions(NetworkPercent, UserInput, tokensPerBlock, blocksPerHour, currentCondition).then((BestArbitrageCurrentConditions) => {
+          let minMargin = .10
+          console.table(BestArbitrageCurrentConditions)
+          rentalProvider.botstatus(RentalCompositeStatusCode, RewardsCompositeCode, currentCondition, currentRental, LiveEstimatesFromMining, MinerSubStatusCode, RoundSharesSubStatusCode, CandidateBlocksSubStatusCode, BestArbitrageCurrentConditions, minMargin).then((res) => {
+          console.table(res);
+        })  
         })
-
+        })
       })
     })
   })
