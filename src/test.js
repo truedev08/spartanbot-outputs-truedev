@@ -87,7 +87,8 @@ function test() {
   rentalProvider.setup(UserInput).then(() => {
     rentalProvider.getcurrentconditions(token, tokenAlgo, minDuration, tokensPerBlock, blocksPerHour).then((currentCondition) => {
       rentalProvider.getcurrentrental(currentCondition).then((currentRental) => {
-        let rewardsBeforeRentalStart = currentCondition.rewardsTotal
+        // let rewardsBeforeRentalStart = currentCondition.rewardsTotal
+        let rewardsBeforeRentalStart = 276298.70399977
         let RentalCompositeStatusCode = (currentRental === undefined) ? (9) : (currentRental.RentalCompositeStatusCode)
         let RewardsCompositeCode = (currentCondition === undefined) ? (9) : (currentCondition.RewardsCompositeCode)
         // let LiveEstimatesFromMining = rentalProvider.liveestimatesfrommining(currentRental, currentCondition, UserInput, tokensPerBlock, blocksPerHour, rewardsBeforeRentalStart)

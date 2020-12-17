@@ -1265,8 +1265,8 @@ class RentalPrediction {
       let orderBookScrypt = await this.provider.provider.getOrderBook('SCRYPT')
       let totalSpeedScryptUSA = orderBookScrypt.stats.USA.totalSpeed;
       let totalSpeedScryptEU = orderBookScrypt.stats.EU.totalSpeed;
-      let PriceRentalStandardKawpowUSA = Math.round(( (10000 * summariesKawpowUSA.summaries['USA,KAWPOW'].payingPrice) + 0.002 )*1e4)/1e4
-      let PriceRentalStandardKawpowEU = Math.round(( (10000 * summariesKawpowEU.summaries['EU,KAWPOW'].payingPrice) + 0.002 )*1e4)/1e4
+      let PriceRentalStandardKawpowUSA = Math.round(( (10000 * summariesKawpowUSA.summaries['USA,KAWPOW'].payingPrice) + 0.02 )*1e4)/1e4
+      let PriceRentalStandardKawpowEU = Math.round(( (10000 * summariesKawpowEU.summaries['EU,KAWPOW'].payingPrice) + 0.02 )*1e4)/1e4
       let PriceRentalStandardScryptUSA = Math.round(( 10000 * summariesScryptUSA.summaries['USA,SCRYPT'].payingPrice )*1e4)/1e4
       let PriceRentalStandardScryptEU = Math.round(( 10000 * summariesScryptEU.summaries['EU,SCRYPT'].payingPrice )*1e4)/1e4
       // console.log('PriceRentalStandardKawpowUSA:', PriceRentalStandardKawpowUSA)
@@ -2344,13 +2344,14 @@ class RentalPrediction {
 
     try{
       let UsersRequestedMargin = _this.UserInput.minMargin 
-      console.table(LiveEstimatesFromMining)
+      // console.table(LiveEstimatesFromMining)
       let currentlyProfitable = (LiveEstimatesFromMining === undefined) ? (false) : (LiveEstimatesFromMining.SpartanMerchantArbitragePrcnt > 0)
       let currentlyAboveUsersMinMargin = (LiveEstimatesFromMining === undefined) ? (false) : (LiveEstimatesFromMining.SpartanMerchantArbitragePrcnt > _this.UserInput.minMargin)
       if (RentalCompositeStatusCode === 0) { // no rental
         let projectedProfitable = (BestArbitrageCurrentConditions === undefined) ? (false) : (BestArbitrageCurrentConditions.ProjectedProfitMargin > 0)
         let projectedAboveUsersMinMargin = (BestArbitrageCurrentConditions === undefined) ? (false) : (BestArbitrageCurrentConditions.ProjectedProfitMargin > minMargin)    
-        let BotStatusCode = (projectedProfitable) ? ( (projectedAboveUsersMinMargin) ? (1):(2)) : (3)  
+        let BotStatusCode = (projectedProfitable) ? ( (projectedAboveUsersMinMargin) ? (1):(2)) : (3)
+        console.log(RentalCompositeStatusCode, RewardsCompositeCode, BotStatusCode)  
         // let RentalEndTime = Date.parse(CurrentRental.RentalOrders.endTs)
         // let CurrentTime = new Date().getTime();
         // let TimeSinceRentalEnded = CurrentTime - RentalEndTime
@@ -2373,7 +2374,8 @@ class RentalPrediction {
             return {BotStatusCode, RewardsCompositeCode , currentlyProfitable, currentlyAboveUsersMinMargin, RentalEndTime, StopMonitoringForRewardsLimit}
           }
           else if (RentalCompositeStatusCode === 4) { //RentalCompositeStatusCode is 4, Dead Order
-            let BotStatusCode = (RewardsCompositeCode === 1) ? (1) : ((RewardsCompositeCode === 0) ? ( (currentlyProfitable)?(2):(3) ) : ('error 2') )
+            let BotStatusCode = (currentlyProfitable) ? ((currentlyAboveUsersMinMargin) ? (1):(2)):(3)
+            console.log(RentalCompositeStatusCode, RewardsCompositeCode, BotStatusCode)
             return {BotStatusCode, RewardsCompositeCode , currentlyProfitable, currentlyAboveUsersMinMargin, RentalEndTime, StopMonitoringForRewardsLimit}
           }
           else if (RentalCompositeStatusCode === 5) { //RentalCompositeStatusCode is 5, Order Not Yet Alive
