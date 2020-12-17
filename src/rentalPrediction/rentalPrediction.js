@@ -1828,13 +1828,13 @@ class RentalPrediction {
       async function minimums(token, tokenAlgo, Networkhashrate, marketFactor, networkhashps, PriceRentalStandard, PriceUsdPerBtcOnCoinbase, HourlyMiningValueInBtc, HourlyMiningCostInBtc, minDuration) {
         let BittrexWithdrawalFee = 0.00005;
         let BittrexMinWithdrawal = 0.00015;
-        let nicehashMinRentalCost = 0.005;
+        let nicehashMinRentalCost = 0.002;
         let MinPercentFromNHMinAmount = Math.round((nicehashMinRentalCost / (((Networkhashrate * PriceRentalStandard) / 24) * minDuration + nicehashMinRentalCost)) * 1e6 ) / 1e6;
 
         async function MinPercentFromNHMinLimitCalc(props) {
           async function MinPercentFromNHMinLimitKawpow(props) {
             let Networkhashrate = networkhashps / marketFactor
-            let MinPercentFromNHMinLimitRvn = Math.round((0.1 / (Networkhashrate + 0.1)) * 1e8) / 1e8;
+            let MinPercentFromNHMinLimitRvn = Math.round((0.0002 / (Networkhashrate + 0.0002)) * 1e8) / 1e8;
             return MinPercentFromNHMinLimitRvn;
           }
 
@@ -2062,7 +2062,7 @@ class RentalPrediction {
     let MaxPercentAsInt = CurrentConditions.MaxPercent * 100
     var listOfNetworkPercentValuesToTry = [];
     for (var i = 1; i <= MaxPercentAsInt; i++) {
-    listOfNetworkPercentValuesToTry.push(i/100);
+    listOfNetworkPercentValuesToTry.push(i/1000);
     }
     listOfNetworkPercentValuesToTry.forEach(tryListOfNetworkPercentValues);
     
@@ -2087,8 +2087,6 @@ class RentalPrediction {
         CurrentConditions.PriceRentalStandard,
         CurrentConditions.luck64,
         CurrentConditions)
-
-        //console.log(CurrentConditions);
 
 
       let ArbSize = AlwaysMineModeEstimates.SpartanMerchantArbitragePrcnt
@@ -2270,7 +2268,7 @@ class RentalPrediction {
     let profileMinDuration = suggestedMinRentalDuration;
     let duration = suggestedMinRentalDuration;
     let MarketPriceUsdPerBtc = PriceUsdPerBtcOnBittrex; //Coinbase.priceUsdPerBtc
-    let Rent = Math.round( Networkhashrate * (-NetworkPercent / (-1 + NetworkPercent)) * 1e1 ) / 1e1;
+    let Rent = Math.round( Networkhashrate * (-NetworkPercent / (-1 + NetworkPercent)) * 1e4 ) / 1e4;
     let EstCostOfRentalInBtc = Math.round( ((Rent * duration) / 24) * PriceRentalStandard * 1e8 ) / 1e8;
     let CostOfRentalInUsd = Math.round((EstCostOfRentalInBtc * PriceUsdPerBtcOnBittrex)*1e2)/1e2
     let myExpectedPoolShare = myPoolShare + NetworkPercent
